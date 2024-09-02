@@ -27,7 +27,7 @@ TEST(SoundexTests, GenerateSoundex_SingleCharacter_ReturnsPaddedCode) {
  
 TEST(SoundexTests, GenerateSoundex_ValidName_ReturnsCorrectSoundex) {
 
-    char input[] = "Code";
+    char input[] = "Jack";
 
     char result[5] = {0};
  
@@ -39,19 +39,19 @@ TEST(SoundexTests, GenerateSoundex_ValidName_ReturnsCorrectSoundex) {
  
 TEST(SoundexTests, GenerateSoundex_LongString_ReturnsTruncatedCode) {
 
-    char input[] = "Codeandbugs";
+    char input[] = "JackandJill";
 
     char result[5] = {0};
  
     GenerateSoundex(input, result);
  
-    ASSERT_STREQ("J020", result);
+    ASSERT_STREQ("J025", result);
 
 }
  
 TEST(SoundexTests, GenerateSoundex_NumbersInString_ReturnsCorrectSoundex) {
 
-    char input[] = "Bug123";
+    char input[] = "Jack123";
 
     char result[5] = {0};
  
@@ -63,7 +63,7 @@ TEST(SoundexTests, GenerateSoundex_NumbersInString_ReturnsCorrectSoundex) {
  
 TEST(SoundexTests, InitializeTheSoundex_ValidName_ReturnsInitializedSoundex) {
 
-    char input[] = "Codility";
+    char input[] = "John";
 
     char result[2] = {0};
  
@@ -83,7 +83,7 @@ TEST(SoundexTests, AppendingSoundexCharacters_ProcessesCharactersCorrectly) {
  
     AppendingSoundexCharacters(input, soundex, &prevCode);
  
-    ASSERT_STREQ("J05", soundex);
+    ASSERT_STREQ("J050", soundex);
 
 }
  
@@ -93,7 +93,7 @@ TEST(SoundexTests, Characters_AppendsCorrectCode) {
 
     char prevCode = 'J';
  
-    Characters('a', soundex, &prevCode);
+    Characters('o', soundex, &prevCode);
  
     ASSERT_STREQ("J0", soundex);
 
@@ -155,9 +155,9 @@ TEST(SoundexTests, GetSoundexCode_UnknownCharacter_ReturnsZero) {
  
 TEST(SoundexTests, GenerateSoundex_CaseInsensitivity_ReturnsSameCode) {
 
-    char inputLowercase[] = "code";
+    char inputLowercase[] = "jack";
 
-    char inputUppercase[] = "CODE";
+    char inputUppercase[] = "JACK";
 
     char resultLowercase[5] = {0};
 
