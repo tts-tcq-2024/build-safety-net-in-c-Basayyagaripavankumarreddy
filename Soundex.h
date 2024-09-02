@@ -1,73 +1,92 @@
-#include <stdio.h>
-#include <string.h>
+#ifndef SOUNDEX_H
+#define SOUNDEX_H
+
+#include "Soundex.h"
 #include <ctype.h>
- 
-void InitializeTheSoundex(char name[], char soundex[]);
-void AppendingSoundexCharacters(char name[], char soundex[], char *prevCode);
-void Characters(char character, char soundex[], char *prevCode);
-char GetSoundexCode(char character);
-int AppendCode(char code, char prevCode);
-void SoundexCode(char soundex[]);
- 
-void GenerateSoundex(char name[], char soundex[]) {
-    if (name == NULL || strlen(name) == 0) {
-        soundex[0] = '\0';
-        return;
+#include <string.h>
+
+char R(char c){
+    if(c=='R'){
+        return '6';
     }
- 
-    InitializeTheSoundex(name, soundex);
-    char prevCode = GetSoundexCode(name[0]);
-    AppendingSoundexCharacters(name, soundex, &prevCode);
-    SoundexCode(soundex);
+    return '0';
 }
- 
-void InitializeTheSoundex(char name[], char soundex[]) {
-    soundex[0] = toupper(name[0]);
-    soundex[1] = '\0';
-}
- 
-void AppendingSoundexCharacters(char name[], char soundex[], char *prevCode) {
-    for (int i = 1; i < strlen(name) && strlen(soundex) < 4; i++) {
-        Characters(name[i], soundex, prevCode);
+
+char MN(char c){
+    if(c=='N' || c=='M'){
+        return '5';
     }
+    return R(c);
 }
- 
-void Characters(char character, char soundex[], char *prevCode) {
-    if (isalpha(character)) {
-        char code = GetSoundexCode(character);
-        if (AppendCode(code, *prevCode)) {
-            strncat(soundex, &code, 1);
-            *prevCode = code;
+
+char L(char c){
+    if(c=='L'){
+        return'4';
+    }
+   return MN(c);
+}
+
+char DT(char c){
+    if(c=='D' || c=='T'){
+        return '3';
+    }
+    return L(c);
+}
+
+char CGKKQSXZ(char c){
+    char ch[] = {'C','G','J','K','Q','S','X','Z'};
+    for(int i=0; i<8;i++){
+        if(c==ch[i]){
+            return '2';
         }
     }
+    return  DT(c);
 }
- 
-char GetSoundexCode(char character) {
-    character = toupper(character);
-    switch (character) {
-        case 'B': case 'F': case 'P': case 'V':
+
+char BFPV(char c){
+    char ch[]={'B','F','P','V'};
+    for(int i=0;i<4;i++){
+        if(c==ch[i]){
             return '1';
-        case 'C': case 'G': case 'J': case 'K': case 'Q': case 'S': case 'X': case 'Z':
-            return '2';
-        case 'D': case 'T':
-            return '3';
-        case 'L':
-            return '4';
-        case 'M': case 'N':
-            return '5';
-        case 'R':
-            return '6';
-        default:
-            return '0';
+        }
+    }
+    return CGKKQSXZ(c);
+}
+
+char getSoundexCode(char c) {
+    c = toupper(c);
+    return BFPV(c);
+    
+}
+
+bool padding(int sIndex, char *soundex){
+    while (sIndex < 4) {
+        soundex[sIndex++] = '0';
+    }
+    soundex[4] = '\0';
+    return true;
+}
+
+bool soundex_check(int sIndex, char *soundex,const char *name,char code){
+    
+    if (code != '0' && code != soundex[sIndex - 1]) {
+            soundex[sIndex++] = code;
+    return true;
     }
 }
- 
-int AppendCode(char code, char prevCode) {
-    return code != '0' && code != prevCode;
-}
- 
-void SoundexCode(char soundex[]) {
-    while (strlen(soundex) < 4) {
-        strncat(soundex, "0", 1);
+
+void generateSoundex(const char *name, char *soundex) {
+    int len = strlen(name);
+    soundex[0] = toupper(name[0]);
+    int sIndex = 1;
+
+    for (int i = 1; i < len && sIndex < 4; i++) {
+        char code = getSoundexCode(name[i]);
+        soundex_check(sIndex,soundex,name,code);
     }
+
+    padding(sIndex,soundex);
+    
 }
+
+#endif // SOUNDEX_H
