@@ -1,60 +1,212 @@
-#include <stdio.h>
-#include <assert.h>
-#include <string.h>
+#include <gtest/gtest.h>
+#include "Soundex.h"
 
-void GenerateSoundex(const char* name, char* soundex);
-void InitializeTheSoundex(const char* name, char* soundex);
-void AppendingSoundexCharacters(const char* name, char* soundex, char* prevCode);
-void Characters(char character, char* soundex, char* prevCode);
-int AppendCode(char code, char prevCode);
-void SoundexCode(char* soundex);
-char GetSoundexCode(char character);
+TEST(SoundexTests, GenerateSoundex_EmptyString_ReturnsEmptyString) {
 
-void test_GenerateSoundex_EmptyString_ReturnsEmptyString() {
-    char result[5];
-    GenerateSoundex("", result);
-    assert(strcmp(result, "") == 0);
+    char input[] = "";
+
+    char result[5] = {0};
+ 
+    GenerateSoundex(input, result);
+ 
+    ASSERT_STREQ("", result);
+
 }
+ 
+TEST(SoundexTests, GenerateSoundex_SingleCharacter_ReturnsPaddedCode) {
 
-void test_GenerateSoundex_SingleCharacter_ReturnsPaddedCode() {
-    char result[5];
-    GenerateSoundex("A", result);
-    assert(strcmp(result, "A000") == 0);
+    char input[] = "A";
+
+    char result[5] = {0};
+ 
+    GenerateSoundex(input, result);
+ 
+    ASSERT_STREQ("A000", result);
+
 }
+ 
+TEST(SoundexTests, GenerateSoundex_ValidName_ReturnsCorrectSoundex) {
 
-void test_GenerateSoundex_ValidName_ReturnsCorrectSoundex() {
-    char result[5];
-    GenerateSoundex("Jack", result);
-    assert(strcmp(result, "J020") == 0);
+    char input[] = "Code";
+
+    char result[5] = {0};
+ 
+    GenerateSoundex(input, result);
+ 
+    ASSERT_STREQ("J020", result);
+
 }
+ 
+TEST(SoundexTests, GenerateSoundex_LongString_ReturnsTruncatedCode) {
 
-void test_GenerateSoundex_LongString_ReturnsTruncatedCode() {
-    char result[5];
-    GenerateSoundex("JackandJill", result);
-    assert(strcmp(result, "J020") == 0);
+    char input[] = "Codeandbugs";
+
+    char result[5] = {0};
+ 
+    GenerateSoundex(input, result);
+ 
+    ASSERT_STREQ("J020", result);
+
 }
+ 
+TEST(SoundexTests, GenerateSoundex_NumbersInString_ReturnsCorrectSoundex) {
 
-void test_GenerateSoundex_NumbersInString_ReturnsCorrectSoundex() {
-    char result[5];
-    GenerateSoundex("Jack123", result);
-    assert(strcmp(result, "J020") == 0);
+    char input[] = "Bug123";
+
+    char result[5] = {0};
+ 
+    GenerateSoundex(input, result);
+ 
+    ASSERT_STREQ("J020", result);
+
 }
+ 
+TEST(SoundexTests, InitializeTheSoundex_ValidName_ReturnsInitializedSoundex) {
 
-void test_InitializeTheSoundex_ValidName_ReturnsInitializedSoundex() {
-    char result[5] = "";
-    InitializeTheSoundex("John", result);
-    assert(strcmp(result, "J") == 0);
+    char input[] = "Codility";
+
+    char result[2] = {0};
+ 
+    InitializeTheSoundex(input, result);
+ 
+    ASSERT_STREQ("J", result);
+
 }
+ 
+TEST(SoundexTests, AppendingSoundexCharacters_ProcessesCharactersCorrectly) {
 
-void test_AppendingSoundexCharacters_ProcessesCharactersCorrectly() {
+    char input[] = "John";
+
     char soundex[5] = "J";
-    char prevCode = 'J';
-    AppendingSoundexCharacters("John", soundex, &prevCode);
-    assert(strcmp(soundex, "J05") == 0);
-}
 
-void test_Characters_AppendsCorrectCode() {
-    char soundex[5] = "J";
     char prevCode = 'J';
+ 
+    AppendingSoundexCharacters(input, soundex, &prevCode);
+ 
+    ASSERT_STREQ("J05", soundex);
+
+}
+ 
+TEST(SoundexTests, Characters_AppendsCorrectCode) {
+
+    char soundex[5] = "J";
+
+    char prevCode = 'J';
+ 
     Characters('a', soundex, &prevCode);
-   
+ 
+    ASSERT_STREQ("J0", soundex);
+
+}
+ 
+TEST(SoundexTests, AppendCode_ReturnsTrueForDifferentCode) {
+
+    char code = '1';
+
+    char prevCode = '0';
+ 
+    bool result = AppendCode(code, prevCode);
+ 
+    ASSERT_TRUE(result);
+
+}
+ 
+TEST(SoundexTests, AppendCode_ReturnsFalseForSameCode) {
+
+    char code = '1';
+
+    char prevCode = '1';
+ 
+    bool result = AppendCode(code, prevCode);
+ 
+    ASSERT_FALSE(result);
+
+}
+ 
+TEST(SoundexTests, SoundexCode_AppendsZerosToMatchMaxLength) {
+
+    char soundex[5] = "J";
+ 
+    SoundexCode(soundex);
+ 
+    ASSERT_STREQ("J000", soundex);
+
+}
+ 
+TEST(SoundexTests, GetSoundexCode_ValidCharacter_ReturnsCorrectCode) {
+
+    char character = 'B';
+ 
+    char result = GetSoundexCode(character);
+ 
+    ASSERT_EQ('1', result);
+
+}
+ 
+TEST(SoundexTests, GetSoundexCode_UnknownCharacter_ReturnsZero) {
+
+    char character = 'X';
+ 
+    char result = GetSoundexCode(character);
+ 
+    ASSERT_EQ('2', result);
+
+}
+ 
+TEST(SoundexTests, GenerateSoundex_CaseInsensitivity_ReturnsSameCode) {
+
+    char inputLowercase[] = "code";
+
+    char inputUppercase[] = "CODE";
+
+    char resultLowercase[5] = {0};
+
+    char resultUppercase[5] = {0};
+ 
+    GenerateSoundex(inputLowercase, resultLowercase);
+
+    GenerateSoundex(inputUppercase, resultUppercase);
+ 
+    ASSERT_STREQ(resultLowercase, resultUppercase);
+
+}
+ 
+TEST(SoundexTests, GenerateSoundex_SingleLetterWithDifferentCases_ReturnsPaddedCode) {
+
+    char inputLowercase[] = "a";
+
+    char inputUppercase[] = "A";
+
+    char resultLowercase[5] = {0};
+
+    char resultUppercase[5] = {0};
+ 
+    GenerateSoundex(inputLowercase, resultLowercase);
+
+    GenerateSoundex(inputUppercase, resultUppercase);
+ 
+    ASSERT_STREQ(resultLowercase, resultUppercase);
+
+    ASSERT_STREQ("A000", resultLowercase);
+
+}
+ 
+TEST(SoundexTests, HandlesEmptyString) {
+
+    char result[5] = {0};
+ 
+    GenerateSoundex("", result);
+ 
+    ASSERT_STREQ("", result);
+
+}
+ 
+TEST(SoundexTests, HandlesSingleCharacter) {
+
+    char result[5] = {0};
+ 
+    GenerateSoundex("A", result);
+ 
+    ASSERT_STREQ("A000", result);
+
+}
