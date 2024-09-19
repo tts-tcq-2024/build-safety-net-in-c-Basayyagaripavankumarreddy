@@ -1,0 +1,86 @@
+This test specification focus on tests validating correct Soundex code generation, ensuring edge cases like empty strings, single characters, case insensitivity, and numeric inputs are handled correctly.
+
+Test Case1: GenerateSoundex_EmptyString_ReturnsEmptyString
+-Description: Verifies that an empty string as input returns an empty string.
+- Input: ““ (empty string)
+- Expected Output: ““ (empty string)
+
+Test Case2: GenerateSoundex_SingleCharacter_ReturnsPaddedCode
+-Description: Ensures that a single character returns the character followed by three zeros to match the required length.
+- Input: “A”
+- Expected Output: “A000”
+
+Test Case3: GenerateSoundex_ValidName_ReturnsCorrectSoundex
+- Description: Validates that the Soundex code for a valid name is generated correctly.
+- Input: “Jack”
+- Expected Output: “J020”
+
+Test Case4: GenerateSoundex_LongString_ReturnsTruncatedCode
+- Description: Ensures that only the first four significant characters are considered in the Soundex code.
+- Input: “JackandJill”
+- Expected Output: “J020”
+
+Test Case5: GenerateSoundex_NumbersInString_ReturnsCorrectSoundex
+- Description: Verifies that numeric characters in the input string are ignored when generating the Soundex code.
+- Input: “Jack123”
+- Expected Output: “J020”
+
+Test Case6: InitializeTheSoundex_ValidName_ReturnsInitializedSoundex
+- Description: Ensures that the Soundex initialization correctly returns the first letter of a valid name.
+- Input: “John”
+- Expected Output: “J”
+
+Test Case7: AppendingSoundexCharacters_ProcessesCharactersCorrectly
+- Description: Verifies the process of appending Soundex characters to ensure correct Soundex code generation.
+- Input: “John”, initial Soundex: “J”
+- Expected Output: “J05”
+
+Test Case8: Characters_AppendsCorrectCode
+- Description: Validates that appending a character to the Soundex string works correctly, ensuring the appropriate code is appended.
+- Input: `'a'`, initial Soundex: “J”
+- Expected Output: “J0” (since 'a' map to 0)
+
+Test Case9: AppendCode_ReturnsTrueForDifferentCode
+- Description: Verifies that `AppendCode` returns `true` when the new code is different from the previous code.
+- Input: `code = '1', prevCode = '0'`
+- Expected Output: `true`
+
+Test Case10: AppendCode_ReturnsFalseForSameCode
+- Description: Ensures that `AppendCode` returns `false` when the current code is the same as the previous code.
+- Input: `code = '1', prevCode = '1'`
+- Expected Output: `false`
+
+Test Case11: SoundexCode_AppendsZerosToMatchMaxLength
+- Description: Verifies that zeros are appended to the Soundex string to ensure it reaches the required length of four characters.
+- Input: initial Soundex: “J”
+- Expected Output: “J000”
+
+Test Case12: GetSoundexCode_ValidCharacter_ReturnsCorrectCode
+- Description: Ensures that valid alphabetic characters return the correct Soundex code.
+- Input: "B"
+- Expected Output: "1" (based on the Soundex encoding rules)
+
+Test Case13: GetSoundexCode_UnknownCharacter_ReturnsZero
+- Description: Verifies that characters not covered by the Soundex code rules return `'0'`.
+- Input: "X"
+- Expected Output: "2"
+
+Test Case14: GenerateSoundex_CaseInsensitivity_ReturnsSameCode
+- Description: Validates that the Soundex algorithm is case insensitive.
+- Input: “jack”, “JACK”
+- Expected Output: Soundex codes for both inputs should be equal.
+
+Test Case15: GenerateSoundex_SingleLetterWithDifferentCases_ReturnsPaddedCode
+- Description: Ensures that a single letter, regardless of case, returns the character followed by three zeros.
+- Input: “a”, “A”
+- Expected Output: “A000”
+
+Test Case16: HandlesEmptyString
+- Description: Validates that an empty string is handled correctly.
+- Input: ““
+- Expected Output: ““
+
+Test Case17: HandlesSingleCharacter
+- Description: Ensures that a single character returns the correct padded code.
+- Input: “A”
+- Expected Output: “A000”
